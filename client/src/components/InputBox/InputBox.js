@@ -1,13 +1,15 @@
 import React from "react";
 import { Input } from "./styles";
 
-function InputBox({ name, type, onChange, value }) {
+function InputBox({ name, type, onChange, value, placeholder, required }) {
   return (
     <Input
-      type="password"
-      name="password"
-      // value={dados.password}
-      // onChange={handleChange}
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      placeholder={placeholder}
+      required={required}
     />
   );
 }

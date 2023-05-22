@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const Container = styled.div`
+  z-index: 100;
   position: sticky;
   top: 0;
   background-color: ${({ theme }) => theme.bgLighter};
@@ -26,6 +27,7 @@ const IconWrapper = styled.div`
 `;
 
 const Logo = styled.div`
+  cursor: pointer;
   position: absolute;
   left: 5%;
   /* margin-bottom: 25px; */
@@ -75,7 +77,7 @@ const User = styled.div`
   align-items: center;
   gap: 10px;
   font-weight: 500;
-  /* color: ${({ theme }) => theme.text}; */
+  color: ${({ theme }) => theme.text};
 `;
 
 const Avatar = styled.img`

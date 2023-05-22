@@ -1,13 +1,13 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
 const commentSchema = mongoose.Schema(
   {
-    writer: {
+    author: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    postId: {
+    videoId: {
       type: Schema.Types.ObjectId,
       ref: "Video",
     },
@@ -18,10 +18,16 @@ const commentSchema = mongoose.Schema(
     content: {
       type: String,
     },
+    likes: {
+      type: [String],
+    },
+    disLikes: {
+      type: [String],
+    },
   },
   { timestamps: true }
 );
 
 const Comment = mongoose.model("Comment", commentSchema);
 
-module.exports = { Comment };
+export default Comment;
