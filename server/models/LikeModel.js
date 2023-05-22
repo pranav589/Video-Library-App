@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+import mongoose from "mongoose";
+const { Schema } = mongoose;
 
-const disLikeSchema = mongoose.Schema(
+const likeSchema = mongoose.Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
@@ -19,6 +19,6 @@ const disLikeSchema = mongoose.Schema(
   { timestamps: true }
 );
 
-const DisLike = mongoose.model("DisLike", disLikeSchema);
+const Like = mongoose.model("Like", likeSchema);
 
-module.exports = { DisLike };
+export default Like;

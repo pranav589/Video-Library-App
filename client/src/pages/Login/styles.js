@@ -15,8 +15,8 @@ const Wrapper = styled.section`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 60%;
-  width: 50%;
+  height: auto;
+  width: 40%;
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   @media (max-width: 768px) {
     width: 100%;
@@ -25,7 +25,7 @@ const Wrapper = styled.section`
   }
 `;
 
-const Form = styled.form`
+const Form = styled.div`
   margin: 0 auto;
   width: 100%;
   max-width: 414px;
@@ -33,6 +33,14 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   position: relative;
+`;
+
+const FormText = styled.div`
+  margin-top: 5px;
+  color: ${({ theme }) => theme.text};
+  & a {
+    color: ${({ theme }) => theme.text};
+  }
 `;
 
 const Title = styled.h2`
@@ -43,4 +51,4 @@ const Title = styled.h2`
   text-align: center;
 `;
 
-export { Wrapper, Form, Title, Container };
+export { Wrapper, Form, Title, Container, FormText };

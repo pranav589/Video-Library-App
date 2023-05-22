@@ -1,20 +1,20 @@
-const { User } = require("../models/User");
+import jwt from "jsonwebtoken";
 
-let auth = (req, res, next) => {
-  let token = req.cookies.w_auth;
-  console.log(token);
-  User.findByToken(token, (err, user) => {
-    if (err) throw err;
-    if (!user)
-      return res.json({
-        isAuth: false,
-        error: true,
-      });
+const auth = async (req, res, next) => {
+  try {
+    const token = req.headers["authorization"];
+    if (!token) {
+      return res.status(400).json({ err: "Invalid Authentication" });
+    }
 
-    req.token = token;
-    req.user = user;
+    const decoded = jwt.verify(token, process.env.TOKEN_SECRET);
+    if (!decoded) return res.status(400).json({ err: "Invalid Authorization" });
+
+    req.user = decoded;
     next();
-  });
+  } catch (error) {
+    return res.status(500).json({ err: error.message });
+  }
 };
 
-module.exports = { auth };
+export default auth;

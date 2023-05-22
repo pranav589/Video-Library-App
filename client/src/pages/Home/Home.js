@@ -1,59 +1,30 @@
-import React, { useState } from "react";
-import { Container } from "./styles";
-import VideoCard from "../../components/VideoCard/VideoCard";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { apiCall } from "../../utils/apiCall";
+import VideoList from "../../components/VideoList/VideoList";
 
 function Home({ type }) {
-  const [videos, setVideos] = useState([
-    {
-      _id: "123",
-      imgUrl: "https://www.raisin.digital/wp-content/uploads/placeholder.svg",
-      title: "Test Video",
-      views: 123,
-    },
-    {
-      _id: "123",
-      imgUrl: "https://www.raisin.digital/wp-content/uploads/placeholder.svg",
-      title: "Test Video",
-      views: 123,
-    },
-    {
-      _id: "123",
-      imgUrl: "https://www.raisin.digital/wp-content/uploads/placeholder.svg",
-      title: "Test Video",
-      views: 123,
-    },
-    {
-      _id: "123",
-      imgUrl: "https://www.raisin.digital/wp-content/uploads/placeholder.svg",
-      title: "Test Video",
-      views: 123,
-    },
-    {
-      _id: "123",
-      imgUrl: "https://www.raisin.digital/wp-content/uploads/placeholder.svg",
-      title: "Test Video",
-      views: 123,
-    },
-    {
-      _id: "123",
-      imgUrl: "https://www.raisin.digital/wp-content/uploads/placeholder.svg",
-      title: "Test Video",
-      views: 123,
-    },
-    {
-      _id: "123",
-      imgUrl: "https://www.raisin.digital/wp-content/uploads/placeholder.svg",
-      title: "Test Video",
-      views: 123,
-    },
-  ]);
-  return (
-    <Container>
-      {videos?.map((video) => (
-        <VideoCard video={video} type={type} />
-      ))}
-    </Container>
-  );
+  const [videos, setVideos] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchAllVideos = async () => {
+      try {
+        setIsLoading(true);
+        const res = await apiCall("GET", "video/homeVideos");
+        if (res?.data?.status === "success") {
+          setVideos(res?.data?.Data);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        toast.error(error?.response?.data?.err);
+        setIsLoading(false);
+      }
+    };
+    fetchAllVideos();
+  }, []);
+
+  return <VideoList videos={videos} type={type} loadingState={isLoading} />;
 }
 
 export default Home;

@@ -1,13 +1,22 @@
-require("dotenv").config();
-const express = require("express");
+import dotenv from "dotenv";
+import express from "express";
 const app = express();
-const path = require("path");
-const cors = require("cors");
+// import { resolve } from "path";
+import cors from "cors";
 
-const bodyParser = require("body-parser");
-const cookieParser = require("cookie-parser");
+// import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
+import authRouter from "./routes/authRouter.js";
+import videoRouter from "./routes/videoRouter.js";
+import likeRouter from "./routes/likeRouter.js";
+import disLikeRouter from "./routes/disLikeRouter.js";
+import subscribeRouter from "./routes/subscribeRouter.js";
+import commentRouter from "./routes/commentRouter.js";
+
+dotenv.config();
+
 const connect = mongoose
   .connect(process.env.mongoURI, {
     useNewUrlParser: true,
@@ -23,18 +32,12 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/users", require("./routes/users"));
-app.use("/api/video", require("./routes/video"));
-app.use("/api/subscribe", require("./routes/subscribe"));
-app.use("/api/comment", require("./routes/comment"));
-app.use("/api/like", require("./routes/like"));
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "../client", "build", "index.html"));
-  });
-}
+app.use("/api/auth", authRouter);
+app.use("/api/video", videoRouter);
+app.use("/api/like", likeRouter);
+app.use("/api/dislike", disLikeRouter);
+app.use("/api/channel", subscribeRouter);
+app.use("/api/comment", commentRouter);
 
 const port = process.env.PORT || 5000;
 

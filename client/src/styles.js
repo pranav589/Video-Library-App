@@ -7,6 +7,11 @@ const Container = styled.div`
 const Main = styled.div`
   flex: 7;
   background-color: ${({ theme }) => theme.bg};
+  min-height: 100vh;
+
+  @media (max-width: 768px) {
+    height: auto;
+  }
 `;
 
 const Wrapper = styled.div`

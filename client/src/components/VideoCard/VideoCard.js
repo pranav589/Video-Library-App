@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+
 import {
   ChannelImage,
   ChannelName,
@@ -10,22 +11,21 @@ import {
   Texts,
   Title,
 } from "./styles";
+import DateFormatter from "../DateFormatter/DateFormatter";
 
 function VideoCard({ video, type }) {
-  const [channel, setChannel] = useState({
-    name: "Pranav",
-    img: "https://www.raisin.digital/wp-content/uploads/placeholder.svg",
-  });
   return (
-    <Link to={`/video/${video._id}`} style={{ textDecoration: "none" }}>
+    <Link to={`/video/${video?._id}`} style={{ textDecoration: "none" }}>
       <Container type={type}>
-        <Image type={type} src={video.imgUrl} />
+        <Image type={type} src={video?.thumbnail} />
         <Details type={type}>
-          <ChannelImage type={type} src={channel?.img} />
+          <ChannelImage type={type} src={video?.author?.avatar} />
           <Texts>
             <Title>{video.title}</Title>
-            <ChannelName>{channel.name}</ChannelName>
-            <Info>{video.views} views • </Info>
+            <ChannelName>{video?.author?.name}</ChannelName>
+            <Info>
+              {/* {video.views} views • <DateFormatter date={video?.updatedAt} /> */}
+            </Info>
           </Texts>
         </Details>
       </Container>

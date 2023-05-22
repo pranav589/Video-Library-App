@@ -7,6 +7,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
+code,
+input,
+textarea,
+input::placeholder,
+textarea::placeholder {
   font-family: "Roboto", sans-serif;
+}
+
+textarea {
+  resize: none;
 }

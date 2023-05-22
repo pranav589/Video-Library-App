@@ -7,13 +7,30 @@ import {
   Search,
   Wrapper,
   IconWrapper,
+  User,
+  Avatar,
 } from "./styles";
-import { Link } from "react-router-dom";
-import { MdMenu, MdOutlineSearch } from "react-icons/md";
+import { Link, useNavigate } from "react-router-dom";
+import { MdMenu, MdOutlineSearch, MdVideocam } from "react-icons/md";
 import { BsYoutube } from "react-icons/bs";
 import CustomButton from "../CustomButton/CustomButton";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../../redux/features/auth/authSlice";
+import useWindowSize from "../../hooks/useWindowSize";
 
 function Header({ setIsSideBarOpened }) {
+  const windowSize = useWindowSize();
+  const userState = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+  const handleLoginButton = () => {
+    navigate("/login");
+  };
+
   return (
     <>
       <Container>
@@ -22,7 +39,7 @@ function Header({ setIsSideBarOpened }) {
             <MdMenu />
           </IconWrapper>
 
-          <Logo>
+          <Logo onClick={() => navigate("/")}>
             {/* <Img src={""} /> */}
             <BsYoutube style={{ marginRight: "10px" }} />
             <div>MyTube</div>
@@ -35,21 +52,19 @@ function Header({ setIsSideBarOpened }) {
             />
             <MdOutlineSearch fontSize={"25px"} color="#ccc" />
           </Search>
-          {/* {currentUser ? (
+          {userState?.user ? (
             <User>
-              <VideoCallOutlinedIcon onClick={() => setOpen(true)} />
-              <Avatar src={currentUser.img} />
-              {currentUser.name}
+              {windowSize?.width > 768 && (
+                <>
+                  <MdVideocam size={26} />
+                  <Avatar src={userState?.user?.avatar} />
+                </>
+              )}
+              <CustomButton name="Logout" handleSubmit={() => handleLogout()} />
             </User>
-          ) : ( */}
-          {/* <Link to="signin" style={{ textDecoration: "none" }}> */}
-          {/* <Button> */}
-          {/* <AccountCircleOutlinedIcon /> */}
-          <CustomButton />
-          {/* SIGN IN
-          </Button> */}
-          {/* </Link> */}
-          {/* )} */}
+          ) : (
+            <CustomButton name="Login" handleSubmit={handleLoginButton} />
+          )}
         </Wrapper>
       </Container>
       {/* {open && <Upload setOpen={setOpen} />} */}
