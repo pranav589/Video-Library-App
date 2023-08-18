@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 const app = express();
 // import { resolve } from "path";
+import path from "path";
 import cors from "cors";
 
 // import bodyParser from "body-parser";
