@@ -3,11 +3,17 @@ import { Container } from "./styles";
 import VideoCard from "../VideoCard/VideoCard";
 import SkeletonVideoCard from "../Skeleton/SkeletonVideoCard";
 
-function VideoList({ videos = [], type, loadingState }) {
+function VideoList({
+  videos = [],
+  type = "",
+  loadingState = false,
+  from = "",
+}) {
   if (loadingState) {
     return (
-      <Container>
-        {videos.length === 0 && [1, 2, 3, 4].map((n) => <SkeletonVideoCard />)}
+      <Container type={type} from={from}>
+        {videos.length === 0 &&
+          [1, 2, 3, 4].map((n) => <SkeletonVideoCard type={type} />)}
       </Container>
     );
   }
@@ -17,7 +23,7 @@ function VideoList({ videos = [], type, loadingState }) {
   }
 
   return (
-    <Container>
+    <Container type={type} from={from}>
       {videos?.map((video) => (
         <VideoCard video={video} type={type} />
       ))}

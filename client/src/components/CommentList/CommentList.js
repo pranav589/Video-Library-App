@@ -46,6 +46,14 @@ function CommentList({
 
   return (
     <Container>
+      <NewComment onSubmit={(e) => handlePostComment(e)}>
+        <Avatar src={userState?.user?.avatar} />
+        <Input
+          placeholder="Add a comment"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+      </NewComment>
       {comments?.map(
         (comment) =>
           !comment?.responseTo && (
@@ -66,15 +74,6 @@ function CommentList({
             </Fragment>
           )
       )}
-
-      <NewComment onSubmit={(e) => handlePostComment(e)}>
-        <Avatar src={userState?.user?.avatar} />
-        <Input
-          placeholder="Add a comment"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-      </NewComment>
     </Container>
   );
 }

@@ -1,15 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Button,
   Container,
   Hr,
   IconWrapper,
   Img,
   Item,
   ItemContainer,
-  Login,
   Logo,
-  Title,
   Wrapper,
 } from "./styles";
 import { Link } from "react-router-dom";
@@ -21,15 +18,13 @@ import {
   MdOutlineHistory,
   MdOutlineWatchLater,
   MdOutlineDarkMode,
-  MdOutlineAccountCircle,
-  MdOutlineLibraryMusic,
-  MdOutlineSportsBaseball,
-  MdOutlineSportsEsports,
-  MdOutlineMovieFilter,
   MdPlaylistAdd,
 } from "react-icons/md";
 import { SiYoutubemusic } from "react-icons/si";
 import { RiVideoLine } from "react-icons/ri";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { apiCall } from "../../utils/apiCall";
 
 function Sidebar({
   isSideBarOpened,
@@ -37,6 +32,10 @@ function Sidebar({
   darkMode,
   setDarkMode,
 }) {
+  const token = localStorage.getItem("token");
+  const userState = useSelector((state) => state?.auth);
+  const [playListsData, setPlayListsData] = useState([]);
+
   const firstSet = [
     {
       icon: <AiOutlineHome />,
@@ -44,19 +43,9 @@ function Sidebar({
       link: "/",
     },
     {
-      icon: <MdOutlineExplore />,
-      name: "Explore",
-      link: "/explore",
-    },
-    {
-      icon: <SiYoutubemusic />,
-      name: "Shorts",
-      link: "/shorts",
-    },
-    {
       icon: <MdOutlineSubscriptions />,
       name: "Subscriptions",
-      link: "/subscriptions",
+      link: `/subscriptions/${userState?.user?._id}?flow=1`,
     },
   ];
 
@@ -74,18 +63,18 @@ function Sidebar({
     {
       icon: <RiVideoLine />,
       name: "Your Videos",
-      link: "/yourVideos",
+      link: "/myVideos",
     },
     {
       icon: <MdOutlineWatchLater />,
       name: "Watch Later",
       link: "/watchLater",
     },
-    {
-      icon: <MdPlaylistAdd />,
-      name: "Play Lists",
-      link: "/playlists",
-    },
+    // {
+    //   icon: <MdPlaylistAdd />,
+    //   name: "Play Lists",
+    //   link: "/playlists",
+    // },
   ];
   const thirdSet = [
     {
@@ -93,6 +82,22 @@ function Sidebar({
       name: "Switch Theme",
     },
   ];
+
+  useEffect(() => {
+    if (token) {
+      const fetchPlayLists = async () => {
+        try {
+          const res = await apiCall("GET", "playList", token);
+          if (res?.data?.status === "success") {
+            setPlayListsData(res?.data?.Data);
+          }
+        } catch (error) {
+          toast.error(error?.response?.data?.err);
+        }
+      };
+      fetchPlayLists();
+    }
+  }, [token]);
 
   return (
     <Container isOpen={isSideBarOpened}>
@@ -129,6 +134,19 @@ function Sidebar({
             </ItemContainer>
           </Link>
         ))}
+        {playListsData?.map((playList) => (
+          <Link
+            to={`/playList/${playList?._id}?name=${playList.name}`}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <ItemContainer>
+              <Item>
+                <MdPlaylistAdd />
+              </Item>
+              <Item>{playList?.name}</Item>
+            </ItemContainer>
+          </Link>
+        ))}
         <Hr />
         {thirdSet.map((item) => (
           <ItemContainer onClick={() => setDarkMode(!darkMode)}>
@@ -136,91 +154,6 @@ function Sidebar({
             <Item>{item.name}</Item>
           </ItemContainer>
         ))}
-        {/* <Item>
-          <AiOutlineHome />
-          Home
-        </Item>
-        <Link to="trends" style={{ textDecoration: "none", color: "inherit" }}>
-          <Item>
-            <MdOutlineExplore />
-            Explore
-          </Item>
-        </Link>
-        <Link
-          to="subscriptions"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <Item>
-            <MdOutlineSubscriptions />
-            Subscriptions
-          </Item>
-        </Link>
-        <Hr />
-        <Item>
-          <MdOutlineVideoLibrary />
-          Library
-        </Item>
-        <Item>
-          <MdOutlineHistory />
-          History
-        </Item>
-        <Hr /> */}
-        {/* {!currentUser && */}
-        {/* <>
-          <Login>
-            Sign in to like videos, comment, and subscribe.
-            <Link to="signin" style={{ textDecoration: "none" }}>
-              <Button>
-                <MdOutlineAccountCircle />
-                SIGN IN
-              </Button>
-            </Link>
-          </Login>
-          <Hr />
-        </> */}
-        {/* } */}
-        {/* <Title>BEST OF LAMATUBE</Title>
-        <Item>
-          <MdOutlineLibraryMusic />
-          Music
-        </Item>
-        <Item>
-          <MdOutlineSportsBaseball />
-          Sports
-        </Item>
-        <Item>
-          <MdOutlineSportsEsports />
-          Gaming
-        </Item>
-        <Item>
-          <MdOutlineMovieFilter />
-          Movies
-        </Item> */}
-        {/* <Item>
-          <ArticleOutlinedIcon />
-          News
-        </Item>
-        <Item>
-          <LiveTvOutlinedIcon />
-          Live
-        </Item>
-        <Hr />
-        <Item>
-          <SettingsOutlinedIcon />
-          Settings
-        </Item>
-        <Item>
-          <FlagOutlinedIcon />
-          Report
-        </Item>
-        <Item>
-          <HelpOutlineOutlinedIcon />
-          Help
-        </Item> */}
-        {/* <Item onClick={() => setDarkMode(!darkMode)}>
-          <SettingsBrightnessOutlinedIcon />
-          {darkMode ? "Light" : "Dark"} Mode
-        </Item> */}
       </Wrapper>
     </Container>
   );

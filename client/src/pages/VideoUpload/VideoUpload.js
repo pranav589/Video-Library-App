@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import { videoUploadValidation } from "../../utils/validation";
 import { apiCall } from "../../utils/apiCall";
+import InputTags from "../../components/InputTags/InputTags";
 
 function VideoUpload() {
   const token = localStorage.getItem("token");
@@ -44,6 +45,7 @@ function VideoUpload() {
     loading: false,
   };
   const [state, setState] = useState(initialState);
+  const [tags, setTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -196,19 +198,22 @@ function VideoUpload() {
   useEffect(() => {
     const videoUploadCall = async () => {
       const payload = {
-        userId: userState.user._id,
+        userId: userState?.user?._id,
         title: state.title,
         description: state.description,
         privacy: state.privacy,
         category: state.category,
         thumbnail: state.imageUrl,
         videoURL: state.videoUrl,
+        tags: tags,
       };
+      console.log({ state: state.imageUpload, state1: state?.videoUpload });
       if (state.imageUpload && state.videoUpload) {
+        console.log({ state2: state.imageUpload, state3: state?.videoUpload });
         try {
           const res = await apiCall(
             "POST",
-            "/video/uploadVideo",
+            "video/uploadVideo",
             token,
             payload
           );
@@ -281,6 +286,7 @@ function VideoUpload() {
           placeholder="Enter Description"
           required={true}
         />
+        <InputTags tags={tags} setTags={setTags} />
         <Dropdown
           label={"Privacy"}
           values={privacy}

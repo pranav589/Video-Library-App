@@ -41,7 +41,7 @@ function VideoDetail() {
   return (
     <Container>
       <DetailVideo videoData={videoData} loadingState={isLoading} />
-      <Recommendations tags={{}} />
+      <Recommendations tags={videoData?.tags} />
     </Container>
   );
 }

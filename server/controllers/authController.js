@@ -136,7 +136,7 @@ export const verifyUser = async (req, res) => {
           _id: user.id,
           name: user.name,
           email: user.email,
-          subscribers: user.subscribers,
+          subscribedUsers: user.subscribedUsers,
           subscribeNumber: user.subscribeNumber,
         },
       },

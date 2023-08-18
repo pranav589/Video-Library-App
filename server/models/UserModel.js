@@ -24,10 +24,17 @@ const userSchema = mongoose.Schema(
       default:
         "https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png",
     },
-    subscribers: {
-      type: [String],
-    },
+    subscribedUsers: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     subscribeNumber: {
+      type: Number,
+      default: 0,
+    },
+    videoUploaded: {
       type: Number,
       default: 0,
     },

@@ -1,7 +1,15 @@
 import React from "react";
 import { Input } from "./styles";
 
-function InputBox({ name, type, onChange, value, placeholder, required }) {
+function InputBox({
+  name = "",
+  type = "text",
+  onChange = () => {},
+  onKeyUp = () => {},
+  value = "",
+  placeholder = "",
+  required = false,
+}) {
   return (
     <Input
       type={type}
@@ -10,6 +18,7 @@ function InputBox({ name, type, onChange, value, placeholder, required }) {
       onChange={onChange}
       placeholder={placeholder}
       required={required}
+      onKeyUp={onKeyUp}
     />
   );
 }
