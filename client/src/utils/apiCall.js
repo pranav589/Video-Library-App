@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "http://localhost:5000";
+const baseURL = "https://video-library-032i.onrender.com";
 
 export const apiCall = async (type, url, token, payload) => {
   const res = await axios({
