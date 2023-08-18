@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
   ChannelImage,
@@ -12,24 +12,40 @@ import {
   Title,
 } from "./styles";
 import DateFormatter from "../DateFormatter/DateFormatter";
+import { Description } from "../VideoChannelInfo/styles";
+import ToolTip from "../ToolTip/ToolTip";
 
 function VideoCard({ video, type }) {
+  const navigate = useNavigate();
+
   return (
-    <Link to={`/video/${video?._id}`} style={{ textDecoration: "none" }}>
-      <Container type={type}>
-        <Image type={type} src={video?.thumbnail} />
-        <Details type={type}>
-          <ChannelImage type={type} src={video?.author?.avatar} />
-          <Texts>
-            <Title>{video.title}</Title>
-            <ChannelName>{video?.author?.name}</ChannelName>
-            <Info>
-              {/* {video.views} views • <DateFormatter date={video?.updatedAt} /> */}
-            </Info>
-          </Texts>
-        </Details>
-      </Container>
-    </Link>
+    <Container type={type} onClick={() => navigate(`/video/${video?._id}`)}>
+      <Image type={type} src={video?.thumbnail} />
+      <Details type={type}>
+        <ChannelImage type={type} src={video?.author?.avatar} />
+        <Texts>
+          <Title>{video?.title}</Title>
+
+          <ToolTip text={video?.author?.name}>
+            <ChannelName
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/channelDetails/${video?.author?._id}`);
+              }}
+            >
+              {video?.author?.name}
+            </ChannelName>
+          </ToolTip>
+
+          <Info>
+            {video.views} views • <DateFormatter date={video?.createdAt} />
+          </Info>
+          {type === "subscriptions-2" && (
+            <Description>{video?.description}</Description>
+          )}
+        </Texts>
+      </Details>
+    </Container>
   );
 }
 

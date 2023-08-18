@@ -1,14 +1,6 @@
 import styled from "styled-components";
 
 const Container = styled.div`
-  /* flex: 1;
-  background-color: ${({ theme }) => theme.bgLighter};
-  height: 100vh;
-  color: ${({ theme }) => theme.text};
-  font-size: 14px;
-  position: sticky;
-
-  top: 0; */
   height: 100%;
   background: ${({ theme }) => theme.bgLighter};
   position: fixed;
@@ -22,6 +14,7 @@ const Container = styled.div`
     !isOpen ? `translateX(-101%)` : "translateX()"};
   transition: transform 0.3s ease-out;
   color: ${({ theme }) => theme.text};
+  overflow: auto;
 `;
 const Wrapper = styled.div`
   padding: 18px 26px;

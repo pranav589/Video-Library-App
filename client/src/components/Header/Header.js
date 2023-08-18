@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Container,
@@ -17,19 +17,25 @@ import CustomButton from "../CustomButton/CustomButton";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/features/auth/authSlice";
 import useWindowSize from "../../hooks/useWindowSize";
+import AutoCompleteSearch from "../AutoCompleteSearch/AutoCompleteSearch";
 
 function Header({ setIsSideBarOpened }) {
   const windowSize = useWindowSize();
   const userState = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [display, setDisplay] = useState(false);
 
   const handleLogout = () => {
     dispatch(logout());
+    navigate("/");
   };
   const handleLoginButton = () => {
     navigate("/login");
   };
+
+  console.log({ searchQuery });
 
   return (
     <>
@@ -40,23 +46,29 @@ function Header({ setIsSideBarOpened }) {
           </IconWrapper>
 
           <Logo onClick={() => navigate("/")}>
-            {/* <Img src={""} /> */}
             <BsYoutube style={{ marginRight: "10px" }} />
             <div>MyTube</div>
           </Logo>
 
-          <Search>
+          {/* <Search>
             <Input
               placeholder="Search"
               //   onChange={(e) => setQ(e.target.value)}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
             <MdOutlineSearch fontSize={"25px"} color="#ccc" />
-          </Search>
+          </Search> */}
+          <AutoCompleteSearch search={searchQuery} setSearch={setSearchQuery} />
           {userState?.user ? (
             <User>
               {windowSize?.width > 768 && (
                 <>
-                  <MdVideocam size={26} />
+                  <MdVideocam
+                    size={26}
+                    onClick={() => navigate("/uploadVideo")}
+                    cursor={"pointer"}
+                  />
                   <Avatar src={userState?.user?.avatar} />
                 </>
               )}
@@ -67,7 +79,6 @@ function Header({ setIsSideBarOpened }) {
           )}
         </Wrapper>
       </Container>
-      {/* {open && <Upload setOpen={setOpen} />} */}
     </>
   );
 }

@@ -15,6 +15,12 @@ import PrivateRoute from "./components/PrivateRoute";
 import Register from "./pages/Register/Register";
 import VideoUpload from "./pages/VideoUpload/VideoUpload";
 import VideoDetail from "./pages/VideoDetail/VideoDetail";
+import Subscriptions from "./pages/Subscriptions/Subscriptions";
+import SubscribedChannels from "./pages/SubscribedChannels/SubscribedChannels";
+import ChannelDetails from "./pages/ChannelDetails/ChannelDetails";
+import MyVideos from "./pages/MyVideos/MyVideos";
+import PlayListDetails from "./pages/PlayListDetails/PlayListDetails";
+import History from "./pages/History/History";
 
 function App() {
   const dispatch = useDispatch();
@@ -47,6 +53,10 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/video/:videoId" element={<VideoDetail />} />
                 <Route
+                  path="/channelDetails/:channelId"
+                  element={<ChannelDetails />}
+                />
+                <Route
                   path="/uploadVideo"
                   element={
                     <PrivateRoute>
@@ -55,10 +65,42 @@ function App() {
                   }
                 />
                 <Route
+                  path="/subscriptions/:userId"
+                  element={
+                    <PrivateRoute>
+                      <Subscriptions />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/subscribedChannels"
+                  element={
+                    <PrivateRoute>
+                      <SubscribedChannels />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
                   path="/myVideos"
                   element={
                     <PrivateRoute>
-                      <Home />
+                      <MyVideos />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/history"
+                  element={
+                    <PrivateRoute>
+                      <History />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/playList/:playListId"
+                  element={
+                    <PrivateRoute>
+                      <PlayListDetails />
                     </PrivateRoute>
                   }
                 />

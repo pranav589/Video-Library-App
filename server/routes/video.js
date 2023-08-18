@@ -36,10 +36,10 @@ router.post("/getVideo", (req, res) => {
 
 router.post("/getSubscriptionVideos", (req, res) => {
   //find all the user that i am subscribing to
-  Subscriber.find({ userFrom: req.body.userFrom }).exec((err, subscribers) => {
+  Subscriber.find({ userFrom: req.body.userFrom }).exec((err, subscribes) => {
     if (err) return res.status(400).json({ success: false, err });
     let subscribedUser = [];
-    subscribers.map((subscriber) => {
+    subscribes.map((subscriber) => {
       subscribedUser.push(subscriber.userTo);
     });
     //fetch the videos that belongs to my subscription

@@ -43,7 +43,7 @@ function DetailVideo({ videoData = {}, loadingState = false }) {
       <Hr />
       <VideoChannelInfo data={videoData} loadingState={loadingState} />
       <Hr />
-      {/* <Comments videoId={currentVideo._id} /> */}
+
       <CommentList
         videoId={videoData?._id}
         comments={comments}

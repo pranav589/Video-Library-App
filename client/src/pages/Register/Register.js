@@ -54,7 +54,6 @@ function Register() {
     );
     if (!isValid) {
       dispatch(register(payload));
-      toast.success("Registered Successfully!");
     }
     if (isValid) {
       toast.error(isValid);

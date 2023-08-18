@@ -5,15 +5,25 @@ import SkeletonVideoActions from "../Skeleton/SkeletonVideoActions";
 import DateFormatter from "../DateFormatter/DateFormatter";
 import LikeDisLike from "../LikeDisLike/LikeDisLike";
 import { useSelector } from "react-redux";
+import { MdPlaylistAdd } from "react-icons/md";
+
+import { toast } from "react-toastify";
+import { apiCall } from "../../utils/apiCall";
+import PlayLists from "../PlayLists/PlayLists";
 
 function VideoActions({ data = {}, loadingState = false }) {
+  const token = localStorage.getItem("token");
+  const [showModal, setShowModal] = useState(false);
   const userState = useSelector((state) => state?.auth);
+  // Like and DisLike States
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [isDisLiked, setIsDisLiked] = useState(false);
   const [disLikeCount, setDisLikeCount] = useState(0);
   const [isLikeLoading, setIsLikeLoading] = useState(false);
   const [isDisLikeLoading, setIsDisLikeLoading] = useState(false);
+
+  //PlayLists States
 
   useEffect(() => {
     const validateIsLiked = data?.likes?.some(
@@ -66,9 +76,41 @@ function VideoActions({ data = {}, loadingState = false }) {
           isDisLikeLoading={isDisLikeLoading}
           setIsDisLikeLoading={setIsDisLikeLoading}
         />
-        <Button>{/* <ReplyOutlinedIcon /> Share */}</Button>
-        <Button>{/* <AddTaskOutlinedIcon /> Save */}</Button>
+
+        <Button>
+          <MdPlaylistAdd size={23} onClick={() => setShowModal(true)} /> Save
+        </Button>
       </Buttons>
+      <PlayLists
+        data={data}
+        showModal={showModal}
+        setShowModal={setShowModal}
+      />
+      {/* <Modal showModal={showModal} setShowModal={setShowModal}>
+        <PlayListsData>
+          <Text>PlayLists</Text>
+          {playLists?.map((playList) => (
+            <label>
+              <CheckBoxComponent
+                checked={checkBoxState.isChecked}
+                onChange={(e) => handleCheckboxChange(e, playList)}
+              />
+              <span style={{ marginLeft: 8 }}>{playList?.name}</span>
+            </label>
+          ))}
+          <PlayListButtons>
+            <InputBox
+              name={"Add PlayList"}
+              onChange={(e) => setPlayListValue(e.target.value)}
+              value={playListValue}
+              placeholder="Add PlayList"
+            />
+            <div style={{ marginLeft: "10px" }}>
+              <CustomButton name="Add" handleSubmit={createNewPlayList} />
+            </div>
+          </PlayListButtons>
+        </PlayListsData>
+      </Modal> */}
     </Details>
   );
 }

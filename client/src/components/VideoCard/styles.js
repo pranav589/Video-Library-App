@@ -1,18 +1,30 @@
 import styled from "styled-components";
 
 const Container = styled.div`
-  width: ${(props) => props.type !== "sm" && "360px"};
+  width: ${(props) =>
+    props.type === "subscriptions-2"
+      ? "fit-content"
+      : props?.type === "sm"
+      ? ""
+      : "360px"};
   margin-bottom: ${(props) => (props.type === "sm" ? "10px" : "45px")};
   cursor: pointer;
-  display: ${(props) => props.type === "sm" && "flex"};
+  display: ${(props) =>
+    (props.type === "sm" || props.type === "subscriptions-2") && "flex"};
   gap: 10px;
+  margin-right: 1rem;
+
+  @media (max-width: 768px) {
+    margin-right: 0px;
+  }
 `;
 
 const Image = styled.img`
-  width: 100%;
+  width: ${(props) =>
+    props.type === "sm" || props.type === "subscriptions-2" ? "300px" : "100%"};
   height: ${(props) => (props.type === "sm" ? "120px" : "202px")};
   background-color: #999;
-  flex: 1;
+  flex: ${(props) => (props.type !== "subscriptions-2" ? "1" : "")};
   border-radius: ${(props) => (props.type === "sm" ? "0px" : "15px")};
   :hover {
     border-radius: 0px;

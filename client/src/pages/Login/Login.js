@@ -36,11 +36,9 @@ function Login() {
       email: email,
       password: CryptoJS.AES.encrypt(password, "Secret 123").toString(),
     };
-    console.log({ payload });
     if (isValid) {
       toast.error(isValid);
     }
-    console.log({ isValid });
     if (!isValid) {
       dispatch(login(payload));
     }

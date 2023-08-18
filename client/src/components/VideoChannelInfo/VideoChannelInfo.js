@@ -23,8 +23,8 @@ function VideoChannelInfo({ data, loadingState }) {
 
   const userState = useSelector((state) => state?.auth);
   useEffect(() => {
-    const validateIsSubscribed = data?.author?.subscribers?.some(
-      (user) => user === userState?.user?._id
+    const validateIsSubscribed = userState?.user?.subscribedUsers?.some(
+      (user) => user === data?.author?._id
     );
     if (validateIsSubscribed) {
       setIsSubscribed(true);
@@ -33,7 +33,7 @@ function VideoChannelInfo({ data, loadingState }) {
       setSubscribeNumber(data?.author?.subscribeNumber);
     }
   }, [
-    data?.author?.subscribers,
+    data?.author?.subscribedUsers,
     data?.author?.subscribeNumber,
     userState?.user?._id,
   ]);
@@ -42,6 +42,7 @@ function VideoChannelInfo({ data, loadingState }) {
     try {
       setIsLoading(true);
       const payload = {
+        channelId: data?.author?._id,
         userId: userState?.user?._id,
       };
       const res = await apiCall("PUT", "channel/subscribe", token, payload);
@@ -60,6 +61,7 @@ function VideoChannelInfo({ data, loadingState }) {
     try {
       setIsLoading(true);
       const payload = {
+        channelId: data?.author?._id,
         userId: userState?.user?._id,
       };
       const res = await apiCall("PUT", "channel/unsubscribe", token, payload);
