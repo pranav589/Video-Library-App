@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Container,
   Hr,
@@ -12,7 +12,6 @@ import {
 import { Link } from "react-router-dom";
 import { AiOutlineHome, AiOutlineCloseCircle } from "react-icons/ai";
 import {
-  MdOutlineExplore,
   MdOutlineSubscriptions,
   MdOutlineVideoLibrary,
   MdOutlineHistory,
@@ -20,11 +19,10 @@ import {
   MdOutlineDarkMode,
   MdPlaylistAdd,
 } from "react-icons/md";
-import { SiYoutubemusic } from "react-icons/si";
 import { RiVideoLine } from "react-icons/ri";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { apiCall } from "../../utils/apiCall";
+import { AuthContext } from "../../context/UserContext";
 
 function Sidebar({
   isSideBarOpened,
@@ -33,7 +31,7 @@ function Sidebar({
   setDarkMode,
 }) {
   const token = localStorage.getItem("token");
-  const userState = useSelector((state) => state?.auth);
+  const userState = useContext(AuthContext);
   const [playListsData, setPlayListsData] = useState([]);
 
   const firstSet = [
@@ -45,7 +43,7 @@ function Sidebar({
     {
       icon: <MdOutlineSubscriptions />,
       name: "Subscriptions",
-      link: `/subscriptions/${userState?.user?._id}?flow=1`,
+      link: `/subscriptions/${userState?.userData?.Data?.user?._id}?flow=1`,
     },
   ];
 

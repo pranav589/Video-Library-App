@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   Background,
   BackgroundShade,
@@ -12,11 +12,11 @@ import {
   VideoImage,
   VideoLength,
 } from "./styles";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/UserContext";
 
 function PlayListInfo({ data, videosLength = 0 }) {
-  const userState = useSelector((state) => state?.auth);
+  const userState = useContext(AuthContext);
   const queryParameters = new URLSearchParams(window.location.search);
   const name = queryParameters.get("name");
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ function PlayListInfo({ data, videosLength = 0 }) {
 
         <PlayListInfoDetail>
           <PlayListName>{name}</PlayListName>
-          <User>{userState?.user?.name}</User>
+          <User>{userState?.userData?.Data?.user?.name}</User>
           <VideoLength>{videosLength} videos</VideoLength>
         </PlayListInfoDetail>
       </Content>

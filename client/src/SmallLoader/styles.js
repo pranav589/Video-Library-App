@@ -19,5 +19,6 @@ const SmallLoaderLayout = styled.span`
   display: inline-block;
   box-sizing: border-box;
   animation: ${rotate} 1s linear infinite;
+  margin: 0px auto;
 `;
 export { SmallLoaderLayout };

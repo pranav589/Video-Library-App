@@ -8,6 +8,7 @@ function CustomButton({
   handleSubmit = () => {},
   loadingState = false,
   type = "",
+  disabled = false,
 }) {
   return loadingState ? (
     type === "small" ? (
@@ -16,7 +17,9 @@ function CustomButton({
       <Loader />
     )
   ) : (
-    <Button onClick={(e) => handleSubmit(e)}>{name}</Button>
+    <Button onClick={(e) => handleSubmit(e)} disabled={disabled}>
+      {name}
+    </Button>
   );
 }
 

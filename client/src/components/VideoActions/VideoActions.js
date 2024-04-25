@@ -1,20 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Buttons, Details, Info } from "./styles";
 
 import SkeletonVideoActions from "../Skeleton/SkeletonVideoActions";
 import DateFormatter from "../DateFormatter/DateFormatter";
 import LikeDisLike from "../LikeDisLike/LikeDisLike";
-import { useSelector } from "react-redux";
 import { MdPlaylistAdd } from "react-icons/md";
 
-import { toast } from "react-toastify";
-import { apiCall } from "../../utils/apiCall";
 import PlayLists from "../PlayLists/PlayLists";
+import { AuthContext } from "../../context/UserContext";
 
 function VideoActions({ data = {}, loadingState = false }) {
-  const token = localStorage.getItem("token");
   const [showModal, setShowModal] = useState(false);
-  const userState = useSelector((state) => state?.auth);
+  const userState = useContext(AuthContext);
   // Like and DisLike States
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
@@ -27,7 +24,7 @@ function VideoActions({ data = {}, loadingState = false }) {
 
   useEffect(() => {
     const validateIsLiked = data?.likes?.some(
-      (like) => like === userState?.user?._id
+      (like) => like === userState?.userData?.Data?.user?._id
     );
 
     if (validateIsLiked) {
@@ -36,11 +33,11 @@ function VideoActions({ data = {}, loadingState = false }) {
     if (data?.likes) {
       setLikeCount(data?.likes?.length);
     }
-  }, [data?.likes, userState?.user?._id]);
+  }, [data?.likes, userState?.userData?.Data?.user?._id]);
 
   useEffect(() => {
     const validateIsDisLiked = data?.disLikes?.some(
-      (disLike) => disLike === userState?.user?._id
+      (disLike) => disLike === userState?.userData?.Data?.user?._id
     );
     if (validateIsDisLiked) {
       setIsDisLiked(true);
@@ -48,7 +45,7 @@ function VideoActions({ data = {}, loadingState = false }) {
     if (data?.disLikes) {
       setDisLikeCount(data?.disLikes?.length);
     }
-  }, [data?.disLikes, userState?.user?._id]);
+  }, [data?.disLikes, userState?.userData?.Data?.user?._id]);
 
   if (loadingState) {
     return <SkeletonVideoActions />;
@@ -66,7 +63,7 @@ function VideoActions({ data = {}, loadingState = false }) {
           isDisLiked={isDisLiked}
           setIsDisLiked={setIsDisLiked}
           videoId={data?._id}
-          userId={userState?.user?._id}
+          userId={userState?.userData?.Data?.user?._id}
           likeCount={likeCount}
           setLikeCount={setLikeCount}
           disLikeCount={disLikeCount}
