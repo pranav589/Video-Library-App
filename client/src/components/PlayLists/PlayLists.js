@@ -38,12 +38,11 @@ function PlayLists({
         setIsLoading(false);
       }
     };
-    fetchPlayLists();
-  }, [token, triggerPlayListCall, data?._id]);
+    showModal && fetchPlayLists();
+  }, [token, triggerPlayListCall, data?._id, showModal]);
 
   const addVideoToPlayList = async (playListId) => {
     try {
-      //   setCheckBoxState({ ...checkBoxState, isChecked: true, isLoading: true });
       const payLoad = {
         videoId: data?._id,
         playListId: playListId,
@@ -137,14 +136,6 @@ function PlayLists({
     }
   };
 
-  //   useEffect(() => {
-  //     playLists?.map((playList) => {
-  //       return playList?.videos.find((video) => video === data?._id)
-  //         ? setCheckBoxState({ ...checkBoxState, isChecked: true })
-  //         : setCheckBoxState({ ...checkBoxState, isChecked: false });
-  //     });
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, []);
   return (
     <Modal showModal={showModal} setShowModal={setShowModal}>
       <PlayListsData>

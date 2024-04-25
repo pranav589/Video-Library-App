@@ -34,14 +34,7 @@ export const videoUploadValidation = (
   privacy,
   category
 ) => {
-  if (
-    !imagePreview ||
-    !videoPreview ||
-    !title ||
-    !description ||
-    !privacy ||
-    !category
-  ) {
+  if (!imagePreview || !videoPreview || !title || !description) {
     return "Please enter all required fields";
   }
 

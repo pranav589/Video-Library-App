@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import {
   Avatar,
   ButtonContainer,
@@ -13,12 +13,12 @@ import {
 } from "./styles";
 import DateFormatter from "../DateFormatter/DateFormatter";
 import LikeDisLike from "../LikeDisLike/LikeDisLike";
-import { useSelector } from "react-redux";
 
 import { Input, NewComment } from "../CommentList/styles";
 import { apiCall } from "../../utils/apiCall";
 import { toast } from "react-toastify";
 import CustomButton from "../CustomButton/CustomButton";
+import { AuthContext } from "../../context/UserContext";
 
 function Comment({
   comment,
@@ -28,7 +28,8 @@ function Comment({
   isReplyComment = true,
 }) {
   const [text, setText] = useState("");
-  const userState = useSelector((state) => state?.auth);
+  // const userState = useSelector((state) => state?.auth);
+  const userState = useContext(AuthContext);
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [isDisLiked, setIsDisLiked] = useState(false);
@@ -39,7 +40,7 @@ function Comment({
 
   useEffect(() => {
     const validateIsLiked = comment?.likes?.some(
-      (like) => like === userState?.user?._id
+      (like) => like === userState?.userData?.Data?.user?._id
     );
 
     if (validateIsLiked) {
@@ -48,11 +49,11 @@ function Comment({
     if (comment?.likes) {
       setLikeCount(comment?.likes?.length);
     }
-  }, [comment?.likes, userState?.user?._id]);
+  }, [comment?.likes, userState?.userData?.Data?.user?._id]);
 
   useEffect(() => {
     const validateIsDisLiked = comment?.disLikes?.some(
-      (disLike) => disLike === userState?.user?._id
+      (disLike) => disLike === userState?.userData?.Data?.user?._id
     );
     if (validateIsDisLiked) {
       setIsDisLiked(true);
@@ -60,7 +61,7 @@ function Comment({
     if (comment?.disLikes) {
       setDisLikeCount(comment?.disLikes?.length);
     }
-  }, [comment?.disLikes, userState?.user?._id]);
+  }, [comment?.disLikes, userState?.userData?.Data?.user?._id]);
 
   const handleReplyOpen = () => {
     setIsReply(true);
@@ -72,7 +73,7 @@ function Comment({
     try {
       const payload = {
         content: text,
-        author: userState?.user?._id,
+        author: userState?.userData?.Data?.user?._id,
         videoId: videoId,
         responseTo: comment?._id,
       };
@@ -105,7 +106,7 @@ function Comment({
               isDisLiked={isDisLiked}
               setIsDisLiked={setIsDisLiked}
               commentId={comment?._id}
-              userId={userState?.user?._id}
+              userId={userState?.userData?.Data?.user?._id}
               likeCount={likeCount}
               setLikeCount={setLikeCount}
               disLikeCount={disLikeCount}
@@ -124,7 +125,7 @@ function Comment({
       {isReply && (
         <Fragment>
           <NewComment>
-            <Avatar src={userState?.user?.avatar} />
+            <Avatar src={userState?.userData?.Data?.user?.avatar} />
             <Input
               placeholder="Add a comment"
               value={text}

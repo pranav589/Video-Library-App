@@ -18,6 +18,9 @@ const Button = styled.button`
   :hover {
     background: rgb(200, 50, 70);
   }
+  :disabled {
+    background: grey;
+  }
 `;
 
 export { Button };

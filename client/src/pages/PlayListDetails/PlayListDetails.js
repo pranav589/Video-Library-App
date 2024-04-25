@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { apiCall } from "../../utils/apiCall";
 import { toast } from "react-toastify";
@@ -6,18 +6,20 @@ import { useParams } from "react-router-dom";
 import VideoList from "../../components/VideoList/VideoList";
 import { PlayListWrapper, VideoWrapper } from "./styles";
 import PlayListInfo from "../../components/PlayListInfo/PlayListInfo";
+import { AuthContext } from "../../context/UserContext";
 
 function PlayListDetails() {
   const [isLoading, setIsLoading] = useState(false);
   const [videos, setVideos] = useState([]);
   const [bannerVideo, setBannerVideo] = useState(null);
+  const userState = useContext(AuthContext);
 
-  const userState = useSelector((state) => state?.auth);
+  // const userState = useSelector((state) => state?.auth);
   const token = localStorage.getItem("token");
   const params = useParams();
 
   useEffect(() => {
-    if (userState?.user?._id && params?.playListId) {
+    if (userState?.userData?.Data?.user?._id && params?.playListId) {
       const fetchMyVideos = async () => {
         try {
           setIsLoading(true);
@@ -38,7 +40,7 @@ function PlayListDetails() {
       };
       fetchMyVideos();
     }
-  }, [token, userState?.user?._id, params.playListId]);
+  }, [token, userState?.userData?.Data?.user?._id, params.playListId]);
 
   return (
     <>

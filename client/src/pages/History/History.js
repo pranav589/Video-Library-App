@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { apiCall } from "../../utils/apiCall";
-import { useSelector } from "react-redux";
 import VideoList from "../../components/VideoList/VideoList";
 import { Title } from "../Subscriptions/styles";
+import { AuthContext } from "../../context/UserContext";
 
 function History() {
   const [isLoading, setIsLoading] = useState(false);
   const [videos, setVideos] = useState([]);
-  const userState = useSelector((state) => state?.auth);
+  // const userState = useSelector((state) => state?.auth);
+  const userState = useContext(AuthContext);
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (userState?.user?._id) {
+    if (userState?.userData?.Data?.user?._id) {
       const fetchHistoryVideos = async () => {
         try {
           setIsLoading(true);
@@ -31,7 +32,7 @@ function History() {
       };
       fetchHistoryVideos();
     }
-  }, [token, userState?.user?._id]);
+  }, [token, userState?.userData?.Data?.user?._id]);
 
   return (
     <>

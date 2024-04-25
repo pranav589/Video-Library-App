@@ -1,11 +1,11 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { Avatar, Container, Input, NewComment } from "./styles";
 import Comment from "../Comment/Comment";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { apiCall } from "../../utils/apiCall";
 import SkeletonComment from "../Skeleton/SkeletonComment";
 import ReplyComment from "../Comment/ReplyComment";
+import { AuthContext } from "../../context/UserContext";
 
 function CommentList({
   comments = [],
@@ -17,7 +17,8 @@ function CommentList({
   setIsReply = () => {},
 }) {
   const token = localStorage.getItem("token");
-  const userState = useSelector((state) => state?.auth);
+  // const userState = useSelector((state) => state?.auth);
+  const userState = useContext(AuthContext);
   const [text, setText] = useState("");
 
   const handlePostComment = async (e) => {
@@ -25,7 +26,7 @@ function CommentList({
     try {
       const payload = {
         content: text,
-        author: userState?.user?._id,
+        author: userState?.userData?.Data?.user?._id,
         videoId: videoId,
       };
       const res = await apiCall("POST", "comment/saveComment", token, payload);
@@ -38,8 +39,6 @@ function CommentList({
     }
   };
 
-  console.log({ comments });
-
   if (loadingState) {
     return [1, 2, 3, 4].map((v) => <SkeletonComment />);
   }
@@ -47,7 +46,12 @@ function CommentList({
   return (
     <Container>
       <NewComment onSubmit={(e) => handlePostComment(e)}>
-        <Avatar src={userState?.user?.avatar} />
+        <Avatar
+          src={
+            userState?.userData?.Data?.user?.avatar ||
+            "https://res.cloudinary.com/devatchannel/image/upload/v1602752402/avatar/avatar_cugq40.png"
+          }
+        />
         <Input
           placeholder="Add a comment"
           value={text}

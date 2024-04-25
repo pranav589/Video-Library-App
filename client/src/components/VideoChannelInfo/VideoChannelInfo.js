@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Channel,
   ChannelCounter,
@@ -10,22 +10,24 @@ import {
   Subscribe,
 } from "./styles";
 import SkeletonVideoChannelInfo from "../Skeleton/SkeletonVideoChannelInfo";
-import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { apiCall } from "../../utils/apiCall";
 import SmallLoader from "../../SmallLoader/SmallLoader";
+import { AuthContext } from "../../context/UserContext";
 
 function VideoChannelInfo({ data, loadingState }) {
   const token = localStorage.getItem("token");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [subscribeNumber, setSubscribeNumber] = useState(0);
+  const userState = useContext(AuthContext);
 
-  const userState = useSelector((state) => state?.auth);
+  // const userState = useSelector((state) => state?.auth);
   useEffect(() => {
-    const validateIsSubscribed = userState?.user?.subscribedUsers?.some(
-      (user) => user === data?.author?._id
-    );
+    const validateIsSubscribed =
+      userState?.userData?.Data?.user?.subscribedUsers?.some(
+        (user) => user === data?.author?._id
+      );
     if (validateIsSubscribed) {
       setIsSubscribed(true);
     }
@@ -35,7 +37,7 @@ function VideoChannelInfo({ data, loadingState }) {
   }, [
     data?.author?.subscribedUsers,
     data?.author?.subscribeNumber,
-    userState?.user?._id,
+    userState?.userData?.Data?.user?._id,
   ]);
 
   const handleSubscribe = async () => {
@@ -43,7 +45,7 @@ function VideoChannelInfo({ data, loadingState }) {
       setIsLoading(true);
       const payload = {
         channelId: data?.author?._id,
-        userId: userState?.user?._id,
+        userId: userState?.userData?.Data?.user?._id,
       };
       const res = await apiCall("PUT", "channel/subscribe", token, payload);
       if (res?.data?.status === "success") {
@@ -62,7 +64,7 @@ function VideoChannelInfo({ data, loadingState }) {
       setIsLoading(true);
       const payload = {
         channelId: data?.author?._id,
-        userId: userState?.user?._id,
+        userId: userState?.userData?.Data?.user?._id,
       };
       const res = await apiCall("PUT", "channel/unsubscribe", token, payload);
       if (res?.data?.status === "success") {

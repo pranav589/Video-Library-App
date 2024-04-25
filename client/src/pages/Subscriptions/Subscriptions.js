@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { apiCall } from "../../utils/apiCall";
 import VideoList from "../../components/VideoList/VideoList";
@@ -7,6 +7,7 @@ import { Box, ManageText, Title, ViewContainer } from "./styles";
 import { BsGridFill, BsListUl, BsGrid } from "react-icons/bs";
 import { FaList } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
+import { AuthContext } from "../../context/UserContext";
 
 function Subscriptions() {
   const location = useLocation();
@@ -15,7 +16,8 @@ function Subscriptions() {
   console.log({ navigate });
   const [videos, setVideos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const userState = useSelector((state) => state?.auth);
+  // const userState = useSelector((state) => state?.auth);
+  const userState = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const [viewType, setViewType] = useState("1");
 
@@ -25,13 +27,13 @@ function Subscriptions() {
   console.log({ viewType });
 
   useEffect(() => {
-    if (userState?.user?._id) {
+    if (userState?.userData?.Data?.user?._id) {
       const fetchSubscribedVideos = async () => {
         try {
           setIsLoading(true);
           const res = await apiCall(
             "GET",
-            `channel/subscriptions/${userState?.user?._id}`,
+            `channel/subscriptions/${userState?.userData?.Data?.user?._id}`,
             token
           );
           if (res?.data?.status === "success") {
@@ -45,7 +47,7 @@ function Subscriptions() {
       };
       fetchSubscribedVideos();
     }
-  }, [userState?.user?._id, token]);
+  }, [userState?.userData?.Data?.user?._id, token]);
 
   return (
     <>
@@ -72,7 +74,7 @@ function Subscriptions() {
               style={{ marginRight: "25px", cursor: "pointer" }}
               onClick={() =>
                 navigate({
-                  pathname: `/subscriptions/${userState?.user?._id}`,
+                  pathname: `/subscriptions/${userState?.userData?.Data?.user?._id}`,
                   search: "?flow=1",
                 })
               }
@@ -89,7 +91,7 @@ function Subscriptions() {
               style={{ marginRight: "25px", cursor: "pointer" }}
               onClick={() =>
                 navigate({
-                  pathname: `/subscriptions/${userState?.user?._id}`,
+                  pathname: `/subscriptions/${userState?.userData?.Data?.user?._id}`,
                   search: "?flow=2",
                 })
               }

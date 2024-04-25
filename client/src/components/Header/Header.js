@@ -1,41 +1,31 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Container,
-  Input,
-  Logo,
-  Search,
-  Wrapper,
-  IconWrapper,
-  User,
-  Avatar,
-} from "./styles";
-import { Link, useNavigate } from "react-router-dom";
-import { MdMenu, MdOutlineSearch, MdVideocam } from "react-icons/md";
+import React, { useContext, useState } from "react";
+import { Container, Logo, Wrapper, IconWrapper, User, Avatar } from "./styles";
+import { useNavigate } from "react-router-dom";
+import { MdMenu, MdVideocam } from "react-icons/md";
 import { BsYoutube } from "react-icons/bs";
 import CustomButton from "../CustomButton/CustomButton";
-import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../../redux/features/auth/authSlice";
+
 import useWindowSize from "../../hooks/useWindowSize";
 import AutoCompleteSearch from "../AutoCompleteSearch/AutoCompleteSearch";
+import { AuthContext } from "../../context/UserContext";
+import { toast } from "react-toastify";
 
 function Header({ setIsSideBarOpened }) {
   const windowSize = useWindowSize();
-  const userState = useSelector((state) => state.auth);
+  const userState = useContext(AuthContext);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [display, setDisplay] = useState(false);
 
   const handleLogout = () => {
-    dispatch(logout());
+    userState.setUser(false);
+    userState?.setUserData(null);
+    toast.success("See you again!");
     navigate("/");
   };
   const handleLoginButton = () => {
     navigate("/login");
   };
-
-  console.log({ searchQuery });
 
   return (
     <>
@@ -49,16 +39,6 @@ function Header({ setIsSideBarOpened }) {
             <BsYoutube style={{ marginRight: "10px" }} />
             <div>MyTube</div>
           </Logo>
-
-          {/* <Search>
-            <Input
-              placeholder="Search"
-              //   onChange={(e) => setQ(e.target.value)}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <MdOutlineSearch fontSize={"25px"} color="#ccc" />
-          </Search> */}
           <AutoCompleteSearch search={searchQuery} setSearch={setSearchQuery} />
           {userState?.user ? (
             <User>
@@ -69,7 +49,12 @@ function Header({ setIsSideBarOpened }) {
                     onClick={() => navigate("/uploadVideo")}
                     cursor={"pointer"}
                   />
-                  <Avatar src={userState?.user?.avatar} />
+                  <Avatar
+                    src={
+                      userState?.user?.avatar ||
+                      userState?.userData?.Data?.user?.avatar
+                    }
+                  />
                 </>
               )}
               <CustomButton name="Logout" handleSubmit={() => handleLogout()} />

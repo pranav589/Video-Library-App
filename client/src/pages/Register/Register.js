@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Form, Title, Wrapper, Container, FormText } from "../Login/styles";
 import InputBox from "../../components/InputBox/InputBox";
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -8,6 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { register, reset } from "../../redux/features/auth/authSlice";
 import { userRegisterValidation } from "../../utils/validation";
+import { AuthContext } from "../../context/UserContext";
+import { apiCall } from "../../utils/apiCall";
 
 function Register() {
   const initialState = {
@@ -18,22 +20,19 @@ function Register() {
   };
   const [userData, setUserData] = useState(initialState);
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   // Redux state
-  const userState = useSelector((state) => state?.auth);
-
+  // const userState = useSelector((state) => state?.auth);
+  const userState = useContext(AuthContext);
   useEffect(() => {
-    if (userState?.isError) {
-      toast.error(userState?.message);
+    if (userState?.userData?.Data?.user) {
+      navigate("/");
     }
-    if (userState.isSuccess) {
-      navigate("/login");
-    }
-    dispatch(reset());
-  }, [userState, navigate, dispatch]);
+  }, [userState, navigate]);
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     const { name, email, password, confirmPassword } = userData;
 
@@ -53,7 +52,19 @@ function Register() {
       confirmPassword
     );
     if (!isValid) {
-      dispatch(register(payload));
+      setIsLoading(true);
+      try {
+        const res = await apiCall("POST", "auth/register", "", payload);
+        if (res?.data?.status === "success") {
+          toast.success("Register Success. Please Login");
+
+          setIsLoading(false);
+          navigate("/login");
+        }
+      } catch (error) {
+        toast.error(error?.response?.data?.err);
+        setIsLoading(false);
+      }
     }
     if (isValid) {
       toast.error(isValid);
@@ -100,13 +111,20 @@ function Register() {
             onChange={(e) =>
               setUserData({ ...userData, confirmPassword: e.target.value })
             }
-            placeholder="Password"
+            placeholder="Confirm Password"
             required={true}
           />
           <CustomButton
             name={"Register"}
             handleSubmit={handleRegister}
-            loadingState={userState?.isLoading}
+            loadingState={isLoading}
+            disabled={
+              !userData?.email ||
+              !userData?.name ||
+              !userData?.password ||
+              !userData.confirmPassword
+            }
+            type="small"
           />
           <FormText>
             Already have an account? <Link to={"/login"}>Login</Link>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Container,
   UploadContainer,
@@ -13,19 +13,17 @@ import { useSelector } from "react-redux";
 import InputBox from "../../components/InputBox/InputBox";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomTextArea from "../../components/CustomTextArea/CustomTextArea";
-import Dropdown from "../../components/Dropdown/Dropdown";
 import { toast } from "react-toastify";
 import ProgressBar from "../../components/ProgressBar/ProgressBar";
 import { videoUploadValidation } from "../../utils/validation";
 import { apiCall } from "../../utils/apiCall";
 import InputTags from "../../components/InputTags/InputTags";
+import { AuthContext } from "../../context/UserContext";
 
 function VideoUpload() {
   const token = localStorage.getItem("token");
-  const privacy = ["Private", "Public", "dynmic", "abc"];
-  const category = ["All", "Latest", "Cricket", "Series", "Movies"];
 
-  const userState = useSelector((state) => state.auth);
+  // const userState = useSelector((state) => state.auth);
   const initialState = {
     imageUrl: "",
     videoUrl: "",
@@ -35,8 +33,6 @@ function VideoUpload() {
     videoFile: null,
     title: "",
     description: "",
-    privacy: "Private",
-    category: "",
     imageUpload: false,
     videoUpload: false,
     imageUploadProgress: 0,
@@ -48,6 +44,7 @@ function VideoUpload() {
   const [tags, setTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const userState = useContext(AuthContext);
 
   const onDropImage = (file) => {
     if (!file) {
@@ -66,10 +63,11 @@ function VideoUpload() {
   };
 
   const imageUpload = () => {
+    setIsLoading(true);
     const fileName = new Date().getTime() + state.imageFile[0].name;
     const storageRef = ref(
       storage,
-      `/thumbnails/${userState.user._id}/${fileName}`
+      `/thumbnails/${userState.Data?.user._id}/${fileName}`
     );
     const uploadTask = uploadBytesResumable(storageRef, state.imageFile[0]);
     uploadTask.on(
@@ -98,7 +96,9 @@ function VideoUpload() {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log({ downloadURL });
           setState({ ...state, imageUrl: downloadURL, imageUpload: true });
+          videoUpload(downloadURL);
         });
       }
     );
@@ -118,11 +118,11 @@ function VideoUpload() {
       toast.error("Please select a video");
     }
   };
-  const videoUpload = () => {
+  const videoUpload = (imgUrl) => {
     const fileName = new Date().getTime() + state.videoFile[0].name;
     const storageRef = ref(
       storage,
-      `/videos/${userState.user._id}/${fileName}`
+      `/videos/${userState.Data?.user._id}/${fileName}`
     );
     const uploadTask = uploadBytesResumable(storageRef, state.videoFile[0]);
     uploadTask.on(
@@ -152,9 +152,36 @@ function VideoUpload() {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setState({ ...state, videoUrl: downloadURL, videoUpload: true });
+          videoUploadCall(imgUrl, downloadURL);
         });
       }
     );
+  };
+
+  console.log({ state });
+
+  const videoUploadCall = async (imgUrl, videoUrl) => {
+    const payload = {
+      userId: userState?.userData?.Data?.user?._id,
+      title: state.title,
+      description: state.description,
+      thumbnail: imgUrl,
+      videoURL: videoUrl,
+      tags: tags,
+    };
+
+    try {
+      const res = await apiCall("POST", "video/uploadVideo", token, payload);
+      if (res?.data?.status === "success") {
+        setIsLoading(false);
+        toast.success("Video Uploaded!");
+        setState(initialState);
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.err);
+      setIsLoading(false);
+    }
   };
 
   const removePreview = (type) => {
@@ -166,21 +193,12 @@ function VideoUpload() {
   };
 
   const handlePostUpload = async () => {
-    const {
-      imagePreview,
-      videoPreview,
-      title,
-      description,
-      privacy,
-      category,
-    } = state;
+    const { imagePreview, videoPreview, title, description } = state;
     const isValid = videoUploadValidation(
       imagePreview,
       videoPreview,
       title,
-      description,
-      privacy,
-      category
+      description
     );
     if (isValid) {
       return toast.error(isValid);
@@ -188,50 +206,11 @@ function VideoUpload() {
     setIsLoading(true);
     try {
       imageUpload();
-      videoUpload();
     } catch (error) {
       toast.error(error.toString());
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    const videoUploadCall = async () => {
-      const payload = {
-        userId: userState?.user?._id,
-        title: state.title,
-        description: state.description,
-        privacy: state.privacy,
-        category: state.category,
-        thumbnail: state.imageUrl,
-        videoURL: state.videoUrl,
-        tags: tags,
-      };
-      console.log({ state: state.imageUpload, state1: state?.videoUpload });
-      if (state.imageUpload && state.videoUpload) {
-        console.log({ state2: state.imageUpload, state3: state?.videoUpload });
-        try {
-          const res = await apiCall(
-            "POST",
-            "video/uploadVideo",
-            token,
-            payload
-          );
-          if (res?.data?.status === "success") {
-            setIsLoading(false);
-            toast.success("Video Uploaded!");
-            setState(initialState);
-            navigate("/");
-          }
-        } catch (error) {
-          toast.error(error?.response?.data?.err);
-          setIsLoading(false);
-        }
-      }
-    };
-    videoUploadCall();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state.imageUpload, state.videoUpload]);
 
   return (
     <Container>
@@ -287,7 +266,7 @@ function VideoUpload() {
           required={true}
         />
         <InputTags tags={tags} setTags={setTags} />
-        <Dropdown
+        {/* <Dropdown
           label={"Privacy"}
           values={privacy}
           onChange={(val) => setState({ ...state, privacy: val })}
@@ -296,8 +275,20 @@ function VideoUpload() {
           label={"Select Category"}
           values={category}
           onChange={(val) => setState({ ...state, category: val })}
+        /> */}
+        <CustomButton
+          name={"POST"}
+          handleSubmit={handlePostUpload}
+          loadingState={isLoading}
+          disabled={
+            !state.description ||
+            !state.title ||
+            tags.length === 0 ||
+            !state.imagePreview ||
+            !state.videoPreview
+          }
+          type="small"
         />
-        <CustomButton name={"POST"} handleSubmit={handlePostUpload} />
       </LowerContainer>
     </Container>
   );

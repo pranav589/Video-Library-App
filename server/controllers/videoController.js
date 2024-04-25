@@ -14,16 +14,7 @@ export const uploadVideo = async (req, res) => {
       tags,
     } = req.body;
 
-    if (
-      !userId ||
-      !title ||
-      !description ||
-      !privacy ||
-      !category ||
-      !thumbnail ||
-      !videoURL ||
-      !tags
-    ) {
+    if (!userId || !title || !description || !thumbnail || !videoURL || !tags) {
       return res.status(400).json({ err: "Please send all required fields" });
     }
 
