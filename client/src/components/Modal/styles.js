@@ -13,11 +13,12 @@ const Background = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100000;
 `;
 
 const ModalWrapper = styled.div`
-  max-width: 800px;
-  max-height: 500px;
+  max-width: 100%;
+  max-height: 600px;
   min-height: 150px;
   min-width: 300px;
   box-shadow: 0 5px 16px rgba(0, 0, 0, 0.2);
@@ -26,6 +27,7 @@ const ModalWrapper = styled.div`
   position: relative;
   z-index: 10;
   border-radius: 10px;
+  overflow: auto;
 `;
 
 const CloseModalButton = styled(MdClose)`

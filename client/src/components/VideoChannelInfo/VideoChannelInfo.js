@@ -7,13 +7,10 @@ import {
   ChannelName,
   Description,
   Image,
-  Subscribe,
 } from "./styles";
 import SkeletonVideoChannelInfo from "../Skeleton/SkeletonVideoChannelInfo";
-import { toast } from "react-toastify";
-import { apiCall } from "../../utils/apiCall";
-import SmallLoader from "../../SmallLoader/SmallLoader";
 import { AuthContext } from "../../context/UserContext";
+import SubscriptionButton from "../SubscriptionButton/SubscriptionButton";
 
 function VideoChannelInfo({ data, loadingState }) {
   const token = localStorage.getItem("token");
@@ -40,42 +37,12 @@ function VideoChannelInfo({ data, loadingState }) {
     userState?.userData?.Data?.user?._id,
   ]);
 
-  const handleSubscribe = async () => {
-    try {
-      setIsLoading(true);
-      const payload = {
-        channelId: data?.author?._id,
-        userId: userState?.userData?.Data?.user?._id,
-      };
-      const res = await apiCall("PUT", "channel/subscribe", token, payload);
-      if (res?.data?.status === "success") {
-        setIsLoading(false);
-        setIsSubscribed(true);
-        setSubscribeNumber((subscribeNumber) => subscribeNumber + 1);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      toast.error(error?.response?.data?.err);
-    }
+  const increaseSubscribeCount = () => {
+    setSubscribeNumber((subscribeNumber) => subscribeNumber + 1);
   };
 
-  const handleUnsubscribe = async () => {
-    try {
-      setIsLoading(true);
-      const payload = {
-        channelId: data?.author?._id,
-        userId: userState?.userData?.Data?.user?._id,
-      };
-      const res = await apiCall("PUT", "channel/unsubscribe", token, payload);
-      if (res?.data?.status === "success") {
-        setIsLoading(false);
-        setSubscribeNumber((subscribeNumber) => subscribeNumber - 1);
-        setIsSubscribed(false);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      toast.error(error?.response?.data?.err);
-    }
+  const decreaseSubscribeCount = () => {
+    setSubscribeNumber((subscribeNumber) => subscribeNumber - 1);
   };
 
   if (loadingState) {
@@ -92,15 +59,15 @@ function VideoChannelInfo({ data, loadingState }) {
           <Description>{data?.description}</Description>
         </ChannelDetail>
       </ChannelInfo>
-      {isLoading ? (
-        <div style={{ width: "10%" }}>
-          <SmallLoader />
-        </div>
-      ) : isSubscribed ? (
-        <Subscribe onClick={handleUnsubscribe}>SUBSCRIBED</Subscribe>
-      ) : (
-        <Subscribe onClick={handleSubscribe}>SUBSCRIBE</Subscribe>
-      )}
+      <SubscriptionButton
+        channelId={data?.author?._id}
+        isSubscribed={isSubscribed}
+        setIsSubscribed={setIsSubscribed}
+        loadingState={isLoading}
+        setIsLoadingState={setIsLoading}
+        customSubscribeSuccessAction={increaseSubscribeCount}
+        customUnsubscribeSuccessAction={decreaseSubscribeCount}
+      />
     </Channel>
   );
 }

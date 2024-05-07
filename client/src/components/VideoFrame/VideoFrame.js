@@ -15,7 +15,7 @@ function VideoFrame({ data, loadingState }) {
   }, [videoProgress]);
 
   useEffect(() => {
-    if (Math.floor(videoProgress) === 10) {
+    if (Math.floor(videoProgress) === 1) {
       const makeView = async () => {
         try {
           await apiCall("PUT", `video/addView/${data?._id}`);
@@ -29,7 +29,7 @@ function VideoFrame({ data, loadingState }) {
   }, [videoProgress, data?._id]);
 
   useEffect(() => {
-    if (Math.floor(videoProgress) === 10) {
+    if (Math.floor(videoProgress) === 1) {
       const markHistoryEntry = async () => {
         try {
           await apiCall("POST", `history/addHistory`, token, {

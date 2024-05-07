@@ -19,6 +19,7 @@ import {
   MdOutlineDarkMode,
   MdPlaylistAdd,
 } from "react-icons/md";
+import { IoIosTrendingUp } from "react-icons/io";
 import { RiVideoLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 import { apiCall } from "../../utils/apiCall";
@@ -41,6 +42,20 @@ function Sidebar({
       link: "/",
     },
     {
+      icon: (
+        <img
+          src={
+            "https://firebasestorage.googleapis.com/v0/b/clone-771cc.appspot.com/o/thumbnails%2Fyoutube-shorts-icon.png?alt=media&token=5c00c790-0716-413e-ab20-af801234bfb3"
+          }
+          alt=""
+          width={20}
+          height={20}
+        />
+      ),
+      name: "Shorts",
+      link: "/shorts",
+    },
+    {
       icon: <MdOutlineSubscriptions />,
       name: "Subscriptions",
       link: `/subscriptions/${userState?.userData?.Data?.user?._id}?flow=1`,
@@ -48,6 +63,11 @@ function Sidebar({
   ];
 
   const secondSet = [
+    {
+      icon: <IoIosTrendingUp />,
+      name: "Trending",
+      link: "/trending",
+    },
     {
       icon: <MdOutlineVideoLibrary />,
       name: "Library",
@@ -113,6 +133,7 @@ function Sidebar({
           <Link
             to={item.link}
             style={{ textDecoration: "none", color: "inherit" }}
+            onClick={() => setIsSideBarOpened(false)}
           >
             <ItemContainer>
               <Item>{item.icon}</Item>
@@ -125,6 +146,7 @@ function Sidebar({
           <Link
             to={item.link}
             style={{ textDecoration: "none", color: "inherit" }}
+            onClick={() => setIsSideBarOpened(false)}
           >
             <ItemContainer>
               <Item>{item.icon}</Item>
@@ -136,6 +158,7 @@ function Sidebar({
           <Link
             to={`/playList/${playList?._id}?name=${playList.name}`}
             style={{ textDecoration: "none", color: "inherit" }}
+            onClick={() => setIsSideBarOpened(false)}
           >
             <ItemContainer>
               <Item>

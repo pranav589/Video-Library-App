@@ -25,7 +25,7 @@ function VideoList({
   return (
     <Container type={type} from={from}>
       {videos?.map((video) => (
-        <VideoCard video={video} type={type} />
+        <VideoCard video={video?.video || video} type={type} />
       ))}
     </Container>
   );
