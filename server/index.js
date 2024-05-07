@@ -19,6 +19,8 @@ import channelRouter from "./routes/userRouter.js";
 import playListRouter from "./routes/playListRouter.js";
 import historyRouter from "./routes/historyRouter.js";
 import searchRouter from "./routes/searchRouter.js";
+import trendingRouter from "./routes/trendingRouter.js";
+import shortsRouter from "./routes/shortsRouter.js";
 
 dotenv.config();
 
@@ -47,6 +49,8 @@ app.use("/api/userChannel", channelRouter);
 app.use("/api/playList", playListRouter);
 app.use("/api/history", historyRouter);
 app.use("/api/search", searchRouter);
+app.use("/api/trendingVideos", trendingRouter);
+app.use("/api/shorts", shortsRouter);
 
 const port = process.env.PORT || 5000;
 

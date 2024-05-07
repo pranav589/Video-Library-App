@@ -21,6 +21,8 @@ import ChannelDetails from "./pages/ChannelDetails/ChannelDetails";
 import MyVideos from "./pages/MyVideos/MyVideos";
 import PlayListDetails from "./pages/PlayListDetails/PlayListDetails";
 import History from "./pages/History/History";
+import TrendingVideos from "./pages/TrendingVideos/TrendingVideos";
+import Shorts from "./pages/Shorts/Shorts";
 
 function App() {
   const dispatch = useDispatch();
@@ -104,6 +106,8 @@ function App() {
                     </PrivateRoute>
                   }
                 />
+                <Route path="/trending" element={<TrendingVideos />} />
+                <Route path="/shorts" element={<Shorts />} />
               </Routes>
               <ToastContainer />
             </Wrapper>

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const videoSchema = mongoose.Schema(
+const shortsSchema = mongoose.Schema(
   {
     author: {
       type: mongoose.Schema.Types.ObjectId,
@@ -10,27 +10,15 @@ const videoSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    description: {
-      type: String,
-      required: true,
-    },
     privacy: {
       type: String,
       default: "Private",
     },
-    catogory: String,
     views: {
       type: Number,
       default: 0,
     },
-    duration: {
-      type: String,
-    },
-    thumbnail: {
-      type: String,
-      required: true,
-    },
-    videoURL: {
+    shortsURL: {
       type: String,
       required: true,
     },
@@ -42,22 +30,10 @@ const videoSchema = mongoose.Schema(
       type: [String],
       default: [],
     },
-    watchTime: {
-      type: Number,
-      default: 0,
-    },
-    tags: {
-      type: [String],
-      default: [],
-    },
-    comments: {
-      type: Number,
-      default: 0,
-    },
   },
   { timestamps: true }
 );
 
-const Video = mongoose.model("Video", videoSchema);
+const Shorts = mongoose.model("Shorts", shortsSchema);
 
-export default Video;
+export default Shorts;

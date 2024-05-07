@@ -1,4 +1,5 @@
 import Comment from "../models/CommentModel.js";
+import Video from "../models/VideoModel.js";
 
 export const saveComment = async (req, res) => {
   try {
@@ -17,6 +18,9 @@ export const saveComment = async (req, res) => {
       await comment.save();
 
       const result = await Comment.findById(comment._id).populate("author");
+      await Video.findByIdAndUpdate(videoId, {
+        $inc: { comments: 1 },
+      });
       return res.json({
         status: "success",
         Data: result,

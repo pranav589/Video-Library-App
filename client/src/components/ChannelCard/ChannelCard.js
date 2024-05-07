@@ -10,11 +10,9 @@ import {
   Texts,
   Title,
 } from "./styles";
-import CustomButton from "../CustomButton/CustomButton";
-import { apiCall } from "../../utils/apiCall";
-import { toast } from "react-toastify";
 import SkeletonChannelCard from "../Skeleton/SkeletonChannelCard";
 import { AuthContext } from "../../context/UserContext";
+import SubscriptionButton from "../SubscriptionButton/SubscriptionButton";
 
 function ChannelCard({
   type,
@@ -27,48 +25,7 @@ function ChannelCard({
   const userState = useContext(AuthContext);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscribeNumber, setSubscribeNumber] = useState(0);
-
-  const token = localStorage.getItem("token");
   const [isUnSubscribeLoading, setIsUnSubscribeLoading] = useState(false);
-  const handleUnsubscribe = async (e) => {
-    e.stopPropagation();
-    try {
-      setIsUnSubscribeLoading(true);
-      const payload = {
-        channelId: channel._id,
-        userId: userState?.userData?.Data?.user?._id,
-      };
-      const res = await apiCall("PUT", "channel/unsubscribe", token, payload);
-      if (res?.data?.status === "success") {
-        setIsUnSubscribeLoading(false);
-        setIsSubscribed(false);
-        // setTriggerChannelsCall(!triggerChannelsCall);
-        setSubscribeNumber((subscribeNumber) => subscribeNumber - 1);
-      }
-    } catch (error) {
-      setIsUnSubscribeLoading(false);
-      toast.error(error?.response?.data?.err);
-    }
-  };
-
-  const handleSubscribe = async () => {
-    try {
-      setIsUnSubscribeLoading(true);
-      const payload = {
-        channelId: channel?._id,
-        userId: userState?.userData?.Data?.user?._id,
-      };
-      const res = await apiCall("PUT", "channel/subscribe", token, payload);
-      if (res?.data?.status === "success") {
-        setIsUnSubscribeLoading(false);
-        setIsSubscribed(true);
-        setSubscribeNumber((subscribeNumber) => subscribeNumber + 1);
-      }
-    } catch (error) {
-      setIsUnSubscribeLoading(false);
-      toast.error(error?.response?.data?.err);
-    }
-  };
 
   useEffect(() => {
     const validateIsSubscribed =
@@ -86,6 +43,14 @@ function ChannelCard({
     channel?.subscribeNumber,
     userState?.userData?.Data?.user?._id,
   ]);
+
+  const increaseSubscribeCount = () => {
+    setSubscribeNumber((subscribeNumber) => subscribeNumber + 1);
+  };
+
+  const decreaseSubscribeCount = () => {
+    setSubscribeNumber((subscribeNumber) => subscribeNumber - 1);
+  };
 
   if (loadingState) {
     return <SkeletonChannelCard />;
@@ -111,13 +76,14 @@ function ChannelCard({
           </Texts>
         </Details>
         <div style={{ marginLeft: "auto" }}>
-          <CustomButton
-            name={isSubscribed ? "Subscribed" : "Subscribe"}
-            handleSubmit={(e) => {
-              isSubscribed ? handleUnsubscribe(e) : handleSubscribe(e);
-            }}
+          <SubscriptionButton
+            channelId={channel?._id}
+            isSubscribed={isSubscribed}
+            setIsSubscribed={setIsSubscribed}
             loadingState={isUnSubscribeLoading}
-            type={"small"}
+            setIsLoadingState={setIsUnSubscribeLoading}
+            customSubscribeSuccessAction={increaseSubscribeCount}
+            customUnsubscribeSuccessAction={decreaseSubscribeCount}
           />
         </div>
       </Container>
