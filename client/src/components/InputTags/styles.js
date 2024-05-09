@@ -41,7 +41,7 @@ const Tag = styled.div`
   font-size: 14px;
   list-style: none;
   border-radius: 6px;
-  margin: 0 8px 8px 0;
+  /* margin: 0 8px 8px 0; */
   background: #f03d4e;
 `;
 

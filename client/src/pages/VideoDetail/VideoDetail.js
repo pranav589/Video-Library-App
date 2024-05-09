@@ -15,11 +15,13 @@ function VideoDetail() {
   const [videoData, setVideoData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const token = localStorage.getItem("token");
+
   useEffect(() => {
     const fetchVideo = async () => {
       try {
         setIsLoading(true);
-        const res = await apiCall("GET", `video/videoDetail/${videoId}`);
+        const res = await apiCall("GET", `video/videoDetail/${videoId}`, token);
         if (res?.data?.status === "success") {
           setVideoData(res?.data?.Data);
           setIsLoading(false);

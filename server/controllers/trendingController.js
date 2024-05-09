@@ -40,7 +40,10 @@ function calculateTrendingScore(video, maxViews, maxLikes, maxComments) {
 
 export const trendingVideos = async (req, res) => {
   try {
-    const videos = await Video.aggregate([{ $sample: { size: 40 } }]);
+    const videos = await Video.aggregate([
+      { $match: { status: "public" } },
+      { $sample: { size: 40 } },
+    ]);
     const videosWithAuthorDetails = await Video.populate(videos, {
       path: "author",
     });

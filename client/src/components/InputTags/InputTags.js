@@ -16,6 +16,14 @@ const InputTags = ({ tags, setTags }) => {
   };
   return (
     <InputTag>
+      <InputBox
+        type="text"
+        value={text}
+        name="Enter your tag and press enter"
+        onChange={(e) => setText(e.target.value)}
+        onKeyUp={(event) => (event.key === "Enter" ? addTags(event) : null)}
+        placeholder="Press enter to add tags"
+      />
       {tags?.length > 0 && (
         <Tags>
           {tags.map((tag, index) => (
@@ -31,14 +39,6 @@ const InputTags = ({ tags, setTags }) => {
           ))}
         </Tags>
       )}
-      <InputBox
-        type="text"
-        value={text}
-        name="Enter your tag and press enter"
-        onChange={(e) => setText(e.target.value)}
-        onKeyUp={(event) => (event.key === "Enter" ? addTags(event) : null)}
-        placeholder="Press enter to add tags"
-      />
     </InputTag>
   );
 };

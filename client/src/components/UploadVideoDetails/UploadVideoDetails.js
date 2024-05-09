@@ -30,17 +30,41 @@ import {
   importFileandPreview,
 } from "../../utils/generateThumbnail";
 import InputTags from "../InputTags/InputTags";
-function UploadVideoDetails({ videoFile, setVideoFile }) {
+function UploadVideoDetails({
+  videoFile,
+  setVideoFile,
+  uploadedVideoUrl,
+  videoUploadData,
+  setVideoUploadData,
+  setTags,
+  tags,
+}) {
   const ref = useRef();
   const [file, setFile] = useState(null);
   const [videoUrl, setVideoUrl] = useState("");
-  const [videoThumb, setVideoThumb] = useState("");
+  const [videoThumb, setVideoThumb] = useState({
+    type: "",
+    value: "",
+  });
   const [thumbnails, setThumbnails] = useState([]);
 
   const handleSelectFile = (e) => {
     if (e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setVideoThumb(e.target.files[0]);
+      if (e.target.files[0].type.split("/").includes("image")) {
+        setFile(e.target.files[0]);
+        setVideoThumb({
+          type: "UPLOADED",
+          value: e.target.files[0],
+          preview: URL.createObjectURL(e.target.files[0]),
+        });
+        setVideoUploadData({
+          ...videoUploadData,
+          thumbnailFile: {
+            type: "UPLOADED",
+            value: e.target.files[0],
+          },
+        });
+      }
     }
   };
 
@@ -56,13 +80,43 @@ function UploadVideoDetails({ videoFile, setVideoFile }) {
     }
   }, [videoFile]);
 
+  const handleGeneratedThumbnailSelection = (item) => {
+    setVideoUploadData({
+      ...videoUploadData,
+      thumbnailFile: {
+        type: "GENERATED",
+        value: item,
+      },
+    });
+    setVideoThumb({ type: "GENERATED", value: item });
+  };
+
   return (
     <Container>
       <LeftSection>
         <LeftHeading>Details</LeftHeading>
         <LeftLowerSection>
-          <InputBox placeholder="Title (required)" required={true} />
-          <CustomTextArea placeholder={"Description"} />
+          <InputBox
+            placeholder="Title (required)"
+            required={true}
+            value={videoUploadData.videoTitle}
+            onChange={(e) =>
+              setVideoUploadData({
+                ...videoUploadData,
+                videoTitle: e.target.value,
+              })
+            }
+          />
+          <CustomTextArea
+            placeholder={"Description"}
+            value={videoUploadData.videoDescription}
+            onChange={(e) =>
+              setVideoUploadData({
+                ...videoUploadData,
+                videoDescription: e.target.value,
+              })
+            }
+          />
           <ThumbnailContainer>
             <ThumbnailTitle>Thumbnail</ThumbnailTitle>
             <ThumbnailSubText>
@@ -78,19 +132,29 @@ function UploadVideoDetails({ videoFile, setVideoFile }) {
                 onChange={handleSelectFile}
               />
               <ThumbnailUpload onClick={() => ref.current.click()}>
-                <IoImagesOutline color="#606060" />
-                <UploadText>Upload Thumbnail</UploadText>
+                {videoThumb?.value && videoThumb.type === "UPLOADED" ? (
+                  <img
+                    src={videoThumb.preview || videoThumb.value}
+                    alt="Thumbnail"
+                    style={{ width: "100%", height: "100%", padding: "5px" }}
+                  />
+                ) : (
+                  <>
+                    <IoImagesOutline color="#606060" />
+                    <UploadText>Upload Thumbnail</UploadText>
+                  </>
+                )}
               </ThumbnailUpload>
               <ThumbnailsGenerated>
                 {thumbnails.map((item) => {
                   return (
                     <GeneratedImage
+                      style={{
+                        border: item === videoThumb.value && "1px dashed red",
+                      }}
                       src={item}
                       alt=""
-                      onClick={() => {
-                        setVideoThumb(item);
-                        // window.scrollTo({ top: 0, behavior: "smooth" });
-                      }}
+                      onClick={() => handleGeneratedThumbnailSelection(item)}
                     />
                   );
                 })}
@@ -98,7 +162,7 @@ function UploadVideoDetails({ videoFile, setVideoFile }) {
             </ThumbnailWrapper>
             <TagsSection>
               <ThumbnailTitle>Tags</ThumbnailTitle>
-              <InputTags />
+              <InputTags tags={tags} setTags={setTags} />
             </TagsSection>
           </ThumbnailContainer>
         </LeftLowerSection>
@@ -106,11 +170,9 @@ function UploadVideoDetails({ videoFile, setVideoFile }) {
       <RightSection>
         <VideoMediaContainer>
           <video
-            poster={videoThumb}
+            poster={videoThumb.preview || videoThumb.value}
             style={{ width: "100%", height: "100%", objectFit: "contain" }}
-            src={
-              "https://firebasestorage.googleapis.com/v0/b/clone-771cc.appspot.com/o/videos%2FCandy%20Crush.mp4?alt=media&token=9a88b1bd-16be-4793-a110-bd917495d4f6"
-            }
+            src={uploadedVideoUrl}
             controls
           />
         </VideoMediaContainer>

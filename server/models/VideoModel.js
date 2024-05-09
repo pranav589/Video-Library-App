@@ -12,11 +12,6 @@ const videoSchema = mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
-    },
-    privacy: {
-      type: String,
-      default: "Private",
     },
     catogory: String,
     views: {
@@ -28,7 +23,6 @@ const videoSchema = mongoose.Schema(
     },
     thumbnail: {
       type: String,
-      required: true,
     },
     videoURL: {
       type: String,
@@ -53,6 +47,10 @@ const videoSchema = mongoose.Schema(
     comments: {
       type: Number,
       default: 0,
+    },
+    status: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

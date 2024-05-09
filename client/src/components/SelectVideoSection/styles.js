@@ -55,3 +55,7 @@ export const UploadSubText = styled.p`
   margin-top: 2px;
   margin-bottom: 26px;
 `;
+
+export const LoaderContainer = styled.div`
+  /* margin: ; */
+`;

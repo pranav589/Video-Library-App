@@ -20,6 +20,7 @@ const Button = styled.button`
   }
   :disabled {
     background: grey;
+    cursor: default;
   }
 `;
 
