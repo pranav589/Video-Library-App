@@ -7,13 +7,15 @@ import {
   myVideos,
   uploadVideo,
   watchTimeOfVideo,
+  editVideo,
 } from "../controllers/videoController.js";
 import auth from "../middleware/auth.js";
 const router = express.Router();
 
 router.post("/uploadVideo", auth, uploadVideo);
+router.put("/editVideo/:id", auth, editVideo);
 router.get("/homeVideos", getAllVideos);
-router.get("/videoDetail/:id", getVideo);
+router.get("/videoDetail/:id", auth, getVideo);
 router.get("/recommendedVideos", getVideosByTag);
 router.put("/addView/:id", addView);
 router.put("/addWatchTime/:id", watchTimeOfVideo);

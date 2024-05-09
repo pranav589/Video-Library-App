@@ -57,7 +57,7 @@ export const getSubscriptionsVideos = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     const subscribedChannels = user.subscribedUsers;
-    const allVideos = await Video.find().populate("author");
+    const allVideos = await Video.find({ status: "public" }).populate("author");
 
     const list = subscribedChannels.map((id) => {
       return allVideos.filter(

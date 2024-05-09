@@ -20,7 +20,13 @@ function VideoCard({ video, type }) {
 
   return (
     <Container type={type} onClick={() => navigate(`/video/${video?._id}`)}>
-      <Image type={type} src={video?.thumbnail} />
+      <Image
+        type={type}
+        src={
+          video?.thumbnail ||
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJyJH0SeRGusK8R1SOl7GRFNINb7yfyem7_OX9Wo7wZQ&s"
+        }
+      />
       <Details type={type}>
         <ChannelImage type={type} src={video?.author?.avatar} />
         <Texts>

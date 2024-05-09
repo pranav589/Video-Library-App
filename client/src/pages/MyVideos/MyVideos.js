@@ -18,6 +18,8 @@ function YourVideos() {
   const userState = useContext(AuthContext);
   const token = localStorage.getItem("token");
   const [file, setFile] = useState(null);
+  const [uploadedVideoUrl, setUploadedVideoUrl] = useState("");
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
   useEffect(() => {
     if (userState?.userData?.Data?.user?._id) {
@@ -57,10 +59,21 @@ function YourVideos() {
             setFile={setFile}
             videoUploadStep={videoUploadStep}
             setVideoUploadStep={setVideoUploadStep}
+            uploadedVideoUrl={uploadedVideoUrl}
+            setUploadedVideoUrl={setUploadedVideoUrl}
+            selectedVideo={selectedVideo}
+            setSelectedVideo={setSelectedVideo}
           />
         )}
         {videoUploadStep === 2 && (
-          <VideoUploadForm file={file} setFile={setFile} />
+          <VideoUploadForm
+            file={file}
+            setFile={setFile}
+            uploadedVideoUrl={uploadedVideoUrl}
+            selectedVideo={selectedVideo}
+            setSelectedVideo={setSelectedVideo}
+            setShowModal={setIsUploadModalOpen}
+          />
         )}
       </Modal> */}
     </>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Container,
   InfoValue,
@@ -40,16 +40,25 @@ const visibilityTypes = [
   },
 ];
 
-function VideoVisibility({ videoThumb }) {
+function VideoVisibility({
+  videoThumb,
+  videoUploadData,
+  setVideoUploadData,
+  uploadedVideoUrl,
+}) {
   const [visibilityValue, setVisibilityValue] = useState("");
 
   const handleChange = (e) => {
-    // string passed in
-    // a string returned by default
-    console.log(e.currentTarget.value);
-    // add + to the event to make the value a number
     setVisibilityValue(e.currentTarget.value);
+    setVideoUploadData({ ...videoUploadData, status: e.currentTarget.value });
   };
+
+  useEffect(() => {
+    if (videoUploadData.status) {
+      setVisibilityValue(videoUploadData.status);
+    }
+  }, [videoUploadData.status]);
+
   return (
     <Container>
       <LeftSection style={{ flex: 0.9 }}>
@@ -88,9 +97,7 @@ function VideoVisibility({ videoThumb }) {
           <video
             poster={videoThumb}
             style={{ width: "100%", height: "100%", objectFit: "contain" }}
-            src={
-              "https://firebasestorage.googleapis.com/v0/b/clone-771cc.appspot.com/o/videos%2FCandy%20Crush.mp4?alt=media&token=9a88b1bd-16be-4793-a110-bd917495d4f6"
-            }
+            src={uploadedVideoUrl}
             controls
           />
         </VideoMediaContainer>

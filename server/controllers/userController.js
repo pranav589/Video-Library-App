@@ -15,7 +15,9 @@ export const getChannelDetails = async (req, res) => {
       return res.status(400).json({ err: "Channel not found." });
     }
 
-    const videos = await Video.find({ author: id }).populate("author");
+    const videos = await Video.find({ author: id, status: "public" }).populate(
+      "author"
+    );
 
     return res.json({
       status: "success",
